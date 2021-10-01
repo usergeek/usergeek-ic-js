@@ -1,0 +1,44 @@
+{
+  "name": "usergeek-ic-js",
+  "version": "1.0.0",
+  "description": "Usergeek Javascript SDK on IC",
+  "main": "./lib/es5/index.js",
+  "author": "Usergeek <support@usergeek.com>",
+  "directories": {
+    "lib": "lib"
+  },
+  "keywords": [
+    "analytics",
+    "usergeek",
+    "javascript",
+    "stats",
+    "tracking",
+    "dfinity",
+    "ic"
+  ],
+  "files": [
+    "lib/**/*"
+  ],
+  "devDependencies": {
+    "@dfinity/agent": "^0.9.2",
+    "@dfinity/auth-client": "^0.9.2",
+    "assert": "2.0.0",
+    "buffer": "6.0.3",
+    "html-webpack-plugin": "5.3.1",
+    "ic-stoic-identity": "^1.5.0",
+    "process": "0.11.10",
+    "stream-browserify": "3.0.0",
+    "ts-loader": "8.3.0",
+    "typescript": "^4.2.4",
+    "webpack": "5.24.4",
+    "webpack-cli": "4.5.0",
+    "webpack-dev-server": "^3.11.2"
+  },
+  "scripts": {
+    "clean": "npm run clean_lib",
+    "clean_lib": "rm -rf lib",
+    "build": "npm run clean && npm run build_es5",
+    "build_es5": "tsc --project tsconfig.json",
+    "start_test": "NODE_ENV=development webpack serve --progress --config webpack.test.config.js"
+  }
+}

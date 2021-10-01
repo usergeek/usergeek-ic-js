@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "lib": ["es2015", "dom"],
+    "declaration": true,
+    "sourceMap": true,
+    "outDir": "./lib/es5",
+    "baseUrl": ".",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowJs": true,
+    "removeComments": true
+  },
+  "files": ["./src/index.ts"],
+  "exclude": [
+    "node_modules",
+  ]
+}
