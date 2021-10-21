@@ -74,6 +74,10 @@ Usergeek.trackSession()
 Usergeek.setPrincipal(null) //or Usergeek.setPrincipal(Principal.anonymous())
 ```
 
+## Community
+
+If you have any questions or suggestions please join our [Discord server](https://discord.gg/CvTpv2TeKs).
+
 ## License
 
 `Usergeek-IC-JS` is distributed under the terms and conditions of the [MIT license](https://github.com/usergeek/usergeek-ic-js/blob/main/LICENSE).
