@@ -79,6 +79,7 @@ Usergeek.setPrincipal(null) //or Usergeek.setPrincipal(Principal.anonymous())
 * Currently Usergeek provides metrics only for **<ins>registered users (non-anonymous Principals)</ins>**.
 * Please note that babel plugin `@babel/plugin-transform-exponentiation-operator"` transforms the exponentiation assignment operator to Math.pow() function which does not support BigInt.<br/>One of the solutions could be to reduce number of supported browsers in `package.json`:
 <br/>
+
 ```json
 ...
 "browserslist": {
@@ -92,7 +93,6 @@ Usergeek.setPrincipal(null) //or Usergeek.setPrincipal(Principal.anonymous())
 }
 ...
 ```
-
 
 ## Community
 
