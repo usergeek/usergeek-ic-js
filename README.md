@@ -81,7 +81,6 @@ Usergeek.setPrincipal(null) //or Usergeek.setPrincipal(Principal.anonymous())
 <br/>
 
 ```json
-//...
 "browserslist": {
   "production": [
     "last 2 chrome version",
@@ -89,9 +88,7 @@ Usergeek.setPrincipal(null) //or Usergeek.setPrincipal(Principal.anonymous())
     "last 2 safari version",
     "last 2 edge version"
   ],
-  //...
 }
-//...
 ```
 
 ## Community
