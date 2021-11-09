@@ -2,15 +2,12 @@ import {Actor, HttpAgent} from "@dfinity/agent";
 
 const idlFactory = ({IDL}) => {
     const SdkVersion = IDL.Nat32;
+    const ProjectApiKey = IDL.Text;
     const AccessToken = IDL.Text;
     const AnalyticsReceiverApiError = IDL.Variant({
         'invalidClient': IDL.Null,
         'wrongAccessToken': IDL.Null,
         'temporarilyUnavailable': IDL.Null,
-    });
-    const CollectResult = IDL.Variant({
-        'ok': IDL.Null,
-        'err': AnalyticsReceiverApiError,
     });
     const IsCollectRequiredResult = IDL.Variant({
         'ok': IDL.Bool,
@@ -21,6 +18,10 @@ const idlFactory = ({IDL}) => {
         [IsCollectRequiredResult],
         ['query'],
     );
+    const CollectResult = IDL.Variant({
+        'ok': IDL.Null,
+        'err': AnalyticsReceiverApiError,
+    });
     const Collect = IDL.Func(
         [IDL.Opt(IDL.Principal), SdkVersion, AccessToken],
         [CollectResult],
@@ -34,21 +35,51 @@ const idlFactory = ({IDL}) => {
         'ok': AnalyticsReceiverApi,
         'err': AnalyticsReceiverApiError,
     });
+    const GetAnalyticsReceiverApi = IDL.Func(
+        [IDL.Opt(IDL.Principal), SdkVersion, AccessToken],
+        [GetAnalyticsReceiverApiResult],
+        ['query'],
+    );
+    const AnalyticsReceiver = IDL.Record({
+        'getAnalyticsReceiverApi': GetAnalyticsReceiverApi,
+        'accessToken': AccessToken,
+    });
+    const GetAnalyticsReceiverError = IDL.Variant({
+        'wrongApiKey': IDL.Null,
+        'clientBlocked': IDL.Null,
+        'invalidClient': IDL.Null,
+        'clientNotRegistered': IDL.Null,
+        'temporarilyUnavailable': IDL.Null,
+        'wrongTopology': IDL.Null,
+    });
+    const GetAnalyticsReceiverResult = IDL.Variant({
+        'ok': AnalyticsReceiver,
+        'err': GetAnalyticsReceiverError,
+    });
+    const RegisterClientOkResult = IDL.Record({
+        'analyticsReceiver': AnalyticsReceiver,
+        'analyticsStoreNotified': IDL.Bool,
+    });
+    const RegisterClientError = IDL.Variant({
+        'wrongApiKey': IDL.Null,
+        'invalidClient': IDL.Null,
+        'temporarilyUnavailable': IDL.Null,
+        'wrongTopology': IDL.Null,
+    });
+    const RegisterClientResult = IDL.Variant({
+        'ok': RegisterClientOkResult,
+        'err': RegisterClientError,
+    });
     return IDL.Service({
-        'collect': IDL.Func(
-            [IDL.Opt(IDL.Principal), SdkVersion, AccessToken],
-            [CollectResult],
+        'getAnalyticsReceiver': IDL.Func(
+            [IDL.Opt(IDL.Principal), SdkVersion, ProjectApiKey],
+            [GetAnalyticsReceiverResult],
+            ['query'],
+        ),
+        'registerClient': IDL.Func(
+            [IDL.Opt(IDL.Principal), SdkVersion, ProjectApiKey],
+            [RegisterClientResult],
             [],
-        ),
-        'getAnalyticsReceiverApi': IDL.Func(
-            [IDL.Opt(IDL.Principal), SdkVersion, AccessToken],
-            [GetAnalyticsReceiverApiResult],
-            ['query'],
-        ),
-        'isCollectRequired': IDL.Func(
-            [IDL.Opt(IDL.Principal), SdkVersion, AccessToken],
-            [IsCollectRequiredResult],
-            ['query'],
         ),
     });
 };
@@ -57,7 +88,7 @@ const idlFactory = ({IDL}) => {
  *
  * @param {string | import("@dfinity/principal").Principal} canisterId Canister ID of Agent
  * @param {{agentOptions?: import("@dfinity/agent").HttpAgentOptions; actorOptions?: import("@dfinity/agent").ActorConfig}} [options]
- * @return {import("@dfinity/agent").ActorSubclass<import("src/canister/analyticsStore/analyticsStore.did.d.ts")._SERVICE>}
+ * @return {import("@dfinity/agent").ActorSubclass<import("src/canisters/clientRegistry.did.d.ts")._SERVICE>}
  */
 const createActor = (canisterId, options) => {
     const agent = new HttpAgent({...options?.agentOptions});
@@ -82,12 +113,14 @@ const createActor = (canisterId, options) => {
  *
  * @param {string} canisterId
  * @param {import("@dfinity/agent").Identity} identity
- * @return {import("@dfinity/agent").ActorSubclass<import("src/canister/analyticsStore/analyticsStore.did.d.ts")._SERVICE>}
+ * @param {string} host
+ * @return {import("@dfinity/agent").ActorSubclass<import("src/canisters/clientRegistry.did.d.ts")._SERVICE>}
  */
-export const createCanisterActor = (canisterId, identity) => {
+export const createCanisterActor = (canisterId, identity, host) => {
     return createActor(canisterId, {
         agentOptions: {
-            identity: identity
+            identity: identity,
+            host: host
         }
     })
 }

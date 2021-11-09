@@ -1,10 +1,8 @@
-import { Principal } from '@dfinity/principal';
-import { ProjectApiKey } from "./canister/coordinator/coordinator.did";
+import { SessionContext } from "./index";
 export declare const timeoutBetweenRetriesSec = 2;
 export declare class SessionFacade {
-    private readonly apiKey;
-    private readonly clientPrincipal;
-    constructor(apiKey: ProjectApiKey, principal: Principal);
+    private readonly sessionContext;
+    constructor(sessionContext: SessionContext);
     trackSession(): Promise<void>;
     private recursiveCall;
     private recursiveCallCoordinator;

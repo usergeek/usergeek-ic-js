@@ -123,7 +123,7 @@ const idlFactory = ({IDL}) => {
  *
  * @param {string | import("@dfinity/principal").Principal} canisterId Canister ID of Agent
  * @param {{agentOptions?: import("@dfinity/agent").HttpAgentOptions; actorOptions?: import("@dfinity/agent").ActorConfig}} [options]
- * @return {import("@dfinity/agent").ActorSubclass<import("src/canister/coordinator/coordinator.did.d.ts")._SERVICE>}
+ * @return {import("@dfinity/agent").ActorSubclass<import("src/canisters/coordinator.did.d.ts")._SERVICE>}
  */
 const createActor = (canisterId, options) => {
     const agent = new HttpAgent({...options?.agentOptions});
@@ -148,12 +148,14 @@ const createActor = (canisterId, options) => {
  *
  * @param {string} canisterId
  * @param {import("@dfinity/agent").Identity} identity
- * @return {import("@dfinity/agent").ActorSubclass<import("src/canister/coordinator/coordinator.did.d.ts")._SERVICE>}
+ * @param {string} host
+ * @return {import("@dfinity/agent").ActorSubclass<import("src/canisters/coordinator.did.d.ts")._SERVICE>}
  */
-export const createCanisterActor = (canisterId, identity) => {
+export const createCanisterActor = (canisterId, identity, host) => {
     return createActor(canisterId, {
         agentOptions: {
-            identity: identity
+            identity: identity,
+            host: host
         }
     })
 }

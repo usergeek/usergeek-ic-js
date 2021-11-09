@@ -1,13 +1,13 @@
 import {AnonymousIdentity} from "@dfinity/agent";
 import {Principal} from '@dfinity/principal';
-import {HelloResult, ProjectApiKey, Topology, TopologyId} from "./canister/coordinator/coordinator.did";
-import {createCanisterActor} from "./canister/coordinator/coordinator";
+import {HelloResult, Topology, TopologyId} from "./canisters/coordinator.did";
+import {createCanisterActor} from "./canisters/coordinator";
 import {UGStorage} from "./Storage";
 import {createErrFatal, createErrResult, createErrRetry, createOkResult, createProceedResult, delayPromise, getSharedFunctionData, getSharedFunctionDataPrincipal, hasOwnProperty, log, UGError, UGResultExtended, warn} from "./utils";
 import {AnalyticsReceiverView, getAnalyticsReceiverData} from "./ClientRegistryService";
 import {timeoutBetweenRetriesSec} from "./SessionFacade";
-
-const coordinator_canister_ids = process.env["COORDINATOR_CANISTER_IDS"] || ["r5m4o-xaaaa-aaaah-qbpfq-cai", "3vhcz-7yaaa-aaaah-qbr2q-cai"]
+import {coordinator_canister_ids} from "./canisters/constants";
+import {SessionContext} from "./index";
 
 export type CoordinatorResponseProceedClientRegistry = { "clientRegistry": { "canisterPrincipal": Principal } }
 export type CoordinatorResponseProceedAnalyticsReceiver = { "analyticsReceiver": { "view": AnalyticsReceiverView } }
@@ -26,7 +26,7 @@ let currentSessionTopologyId
 // Public
 ////////////////////////////////////////////////
 
-export const getResult = async (sdkVersion: number, apiKey: ProjectApiKey, clientPrincipal: Principal): Promise<CoordinatorResponse> => {
+export const getResult = async (sdkVersion: number, sessionContext: SessionContext): Promise<CoordinatorResponse> => {
     currentSessionTopologyId = await UGStorage.coordinator.getTopologyId()
     let canisterIds = await UGStorage.coordinator.getCanisterIds();
     if (canisterIds.length === 0) {
@@ -36,27 +36,27 @@ export const getResult = async (sdkVersion: number, apiKey: ProjectApiKey, clien
         warn("no canisters");
         return createErrFatal()
     }
-    return await getClientRegistry(sdkVersion, apiKey, clientPrincipal, canisterIds)
+    return await getClientRegistry(sdkVersion, sessionContext, canisterIds)
 }
 
 ////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////
 
-const hello = async (sdkVersion: number, apiKey: ProjectApiKey, clientPrincipal: Principal, canisterId: string): Promise<HelloResult> => {
-    const actor = createCanisterActor(canisterId, new AnonymousIdentity());
+const hello = async (sdkVersion: number, sessionContext: SessionContext, canisterId: string): Promise<HelloResult> => {
+    const actor = createCanisterActor(canisterId, new AnonymousIdentity(), sessionContext.host);
     const topologyId = currentSessionTopologyId
-    return await actor.hello([clientPrincipal], sdkVersion, topologyId ? [topologyId] : [], apiKey);
+    return await actor.hello([sessionContext.clientPrincipal], sdkVersion, topologyId ? [topologyId] : [], sessionContext.apiKey);
 }
 
 
-const getClientRegistry = async (sdkVersion: number, apiKey: ProjectApiKey, clientPrincipal: Principal, inProgressCanisterIds: Array<string>): Promise<CoordinatorResponse> => {
+const getClientRegistry = async (sdkVersion: number, sessionContext: SessionContext, inProgressCanisterIds: Array<string>): Promise<CoordinatorResponse> => {
     const canisterId: string = getCanisterId(inProgressCanisterIds);
     log("using:", {inProgressCanisterIds, currentSessionTopologyId, canisterId});
     if (canisterId) {
         let result: HelloResult;
         try {
-            result = await hello(sdkVersion, apiKey, clientPrincipal, canisterId);
+            result = await hello(sdkVersion, sessionContext, canisterId);
         } catch (e) {
             warn("actor.hello", e);
             return createErrRetry()
@@ -104,7 +104,7 @@ const getClientRegistry = async (sdkVersion: number, apiKey: ProjectApiKey, clie
         log("sleep for", timeout, "ms");
         await delayPromise(timeout)
         const updatedInProgressCanisters = markCanisterIdAsFailed(canisterId, inProgressCanisterIds);
-        return getClientRegistry(sdkVersion, apiKey, clientPrincipal, updatedInProgressCanisters)
+        return getClientRegistry(sdkVersion, sessionContext, updatedInProgressCanisters)
     }
     return createErrRetry()
 }

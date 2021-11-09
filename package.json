@@ -1,6 +1,6 @@
 {
   "name": "usergeek-ic-js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Usergeek Javascript SDK for Internet Computer",
   "main": "./lib/es5/index.js",
   "author": "Usergeek <support@usergeek.com>",
@@ -25,7 +25,6 @@
     "assert": "2.0.0",
     "buffer": "6.0.3",
     "html-webpack-plugin": "5.3.1",
-    "ic-stoic-identity": "^1.5.0",
     "process": "0.11.10",
     "stream-browserify": "3.0.0",
     "ts-loader": "8.3.0",
@@ -37,8 +36,9 @@
   "scripts": {
     "clean": "npm run clean_lib",
     "clean_lib": "rm -rf lib",
-    "build": "npm run clean && npm run build_es5",
+    "build": "npm run clean && npm run build_es5 && npm run copy_did",
     "build_es5": "tsc --project tsconfig.json",
+    "copy_did": "cp src/canisters/*.did.d.ts lib/es5/canisters",
     "start_test": "NODE_ENV=development webpack serve --progress --config webpack.test.config.js"
   }
 }

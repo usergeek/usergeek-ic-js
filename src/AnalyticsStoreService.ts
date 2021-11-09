@@ -1,10 +1,10 @@
-import {ProjectApiKey} from "./canister/coordinator/coordinator.did";
 import {Principal} from "@dfinity/principal";
-import {createCanisterActor} from "./canister/analyticsStore/analyticsStore";
-import {_SERVICE, AnalyticsReceiverApi, AnalyticsReceiverApiError, CollectResult, GetAnalyticsReceiverApiResult, IsCollectRequiredResult} from "./canister/analyticsStore/analyticsStore.did";
-import {AccessToken} from "./canister/clientRegistry/clientRegistry.did";
+import {createCanisterActor} from "./canisters/analyticsStore";
+import {_SERVICE, AnalyticsReceiverApi, AnalyticsReceiverApiError, CollectResult, GetAnalyticsReceiverApiResult, IsCollectRequiredResult} from "./canisters/analyticsStore.did";
+import {AccessToken} from "./canisters/clientRegistry.did";
 import {createErrFatal, createErrRetry, createOkResult, getSharedFunctionData, isErr, isErrTemporarilyUnavailable, isOk, log, UGError, UGResult, warn} from "./utils";
 import {AnonymousIdentity} from "@dfinity/agent";
+import {SessionContext} from "./index";
 
 type GetAnalyticsReceiverApiResponse = UGResult<Principal, UGError>
 type IsCollectRequiredResponse = UGResult<{ isCollectRequired: boolean }, UGError>
@@ -16,16 +16,16 @@ export type AnalyticsStoreResponse = UGResult<string, UGError>
 // Public
 ////////////////////////////////////////////////
 
-export const getResult = async (sdkVersion: number, apiKey: ProjectApiKey, clientPrincipal: Principal, canisterPrincipal: Principal, accessToken: AccessToken): Promise<AnalyticsStoreResponse> => {
-    const getApiActor: _SERVICE = createCanisterActor(canisterPrincipal.toText(), new AnonymousIdentity());
-    const handleGetAnalyticsReceiverApiResponse: GetAnalyticsReceiverApiResponse = await handleGetAnalyticsReceiverApi(getApiActor, clientPrincipal, sdkVersion, accessToken)
+export const getResult = async (sdkVersion: number, sessionContext: SessionContext, canisterPrincipal: Principal, accessToken: AccessToken): Promise<AnalyticsStoreResponse> => {
+    const getApiActor: _SERVICE = createCanisterActor(canisterPrincipal.toText(), new AnonymousIdentity(), sessionContext.host);
+    const handleGetAnalyticsReceiverApiResponse: GetAnalyticsReceiverApiResponse = await handleGetAnalyticsReceiverApi(getApiActor, sessionContext.clientPrincipal, sdkVersion, accessToken)
     if (isOk(handleGetAnalyticsReceiverApiResponse)) {
         const apiPrincipal: Principal = handleGetAnalyticsReceiverApiResponse.ok;
-        const actor: _SERVICE = createCanisterActor(apiPrincipal.toText(), new AnonymousIdentity());
-        const handleIsCollectRequiredResponse: IsCollectRequiredResponse = await isCollectRequired(actor, clientPrincipal, sdkVersion, accessToken)
+        const actor: _SERVICE = createCanisterActor(apiPrincipal.toText(), new AnonymousIdentity(), sessionContext.host);
+        const handleIsCollectRequiredResponse: IsCollectRequiredResponse = await isCollectRequired(actor, sessionContext.clientPrincipal, sdkVersion, accessToken)
         if (isOk(handleIsCollectRequiredResponse)) {
             if (handleIsCollectRequiredResponse.ok.isCollectRequired) {
-                const handleCollectResponse: CollectResponse = await handleCollect(actor, clientPrincipal, sdkVersion, accessToken)
+                const handleCollectResponse: CollectResponse = await handleCollect(actor, sessionContext.clientPrincipal, sdkVersion, accessToken)
                 if (isOk(handleCollectResponse)) {
                     return createOkResult("collected")
                 } else if (isErr(handleCollectResponse)) {

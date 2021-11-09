@@ -1,9 +1,10 @@
 import {Principal} from '@dfinity/principal';
 import {AnonymousIdentity} from "@dfinity/agent";
-import {createCanisterActor} from './canister/clientRegistry/clientRegistry';
-import {_SERVICE, AccessToken, AnalyticsReceiver, GetAnalyticsReceiverError, GetAnalyticsReceiverResult, RegisterClientError, RegisterClientResult} from './canister/clientRegistry/clientRegistry.did';
-import {ProjectApiKey} from "./canister/coordinator/coordinator.did";
+import {createCanisterActor} from './canisters/clientRegistry';
+import {_SERVICE, AccessToken, AnalyticsReceiver, GetAnalyticsReceiverError, GetAnalyticsReceiverResult, RegisterClientError, RegisterClientResult} from './canisters/clientRegistry.did';
+import {ProjectApiKey} from "./canisters/coordinator.did";
 import {createErrFatal, createErrRestart, createErrResult, createErrRetry, createOkResult, createProceedResult, getSharedFunctionDataPrincipal, hasOwnProperty, isErr, isErrTemporarilyUnavailable, isErrWrongTopology, isOk, isProceed, log, UGError, UGResult, UGResultExtended, warn} from "./utils";
+import {SessionContext} from "./index";
 
 type GetAnalyticsReceiverResponse = UGResult<AnalyticsReceiverView, "clientNotRegistered" | UGError>
 // type GetAnalyticsReceiverResponse = { "ok": AnalyticsReceiverView } | { "err": "clientNotRegistered" | "retry" | "stop" | "restart" }
@@ -20,9 +21,9 @@ export type ClientRegistryResponse = UGResultExtended<string, UGError, Analytics
 // Public
 ////////////////////////////////////////////////
 
-export const getResult = async (sdkVersion: number, apiKey: ProjectApiKey, clientPrincipal: Principal, clientRegistryPrincipal: Principal): Promise<ClientRegistryResponse> => {
-    const actor: _SERVICE = createCanisterActor(clientRegistryPrincipal.toText(), new AnonymousIdentity());
-    const handleGetAnalyticsReceiverResponse = await handleGetAnalyticsReceiver(actor, clientPrincipal, sdkVersion, apiKey)
+export const getResult = async (sdkVersion: number, sessionContext: SessionContext, clientRegistryPrincipal: Principal): Promise<ClientRegistryResponse> => {
+    const actor: _SERVICE = createCanisterActor(clientRegistryPrincipal.toText(), new AnonymousIdentity(), sessionContext.host);
+    const handleGetAnalyticsReceiverResponse = await handleGetAnalyticsReceiver(actor, sessionContext.clientPrincipal, sdkVersion, sessionContext.apiKey)
     log("handle.getAnalyticsReceiver", handleGetAnalyticsReceiverResponse);
     if (isOk(handleGetAnalyticsReceiverResponse)) {
         const analyticsReceiverView: AnalyticsReceiverView = handleGetAnalyticsReceiverResponse.ok
@@ -32,7 +33,7 @@ export const getResult = async (sdkVersion: number, apiKey: ProjectApiKey, clien
     } else if (isErr(handleGetAnalyticsReceiverResponse)) {
         switch (handleGetAnalyticsReceiverResponse.err) {
             case "clientNotRegistered":
-                const handleRegisterClientResult: RegisterClientResponse = await handleRegisterClient(actor, clientPrincipal, sdkVersion, apiKey)
+                const handleRegisterClientResult: RegisterClientResponse = await handleRegisterClient(actor, sessionContext.clientPrincipal, sdkVersion, sessionContext.apiKey)
                 log("handle.registerClient", handleRegisterClientResult);
                 if (isOk(handleRegisterClientResult)) {
                     return createOkResult("registered")

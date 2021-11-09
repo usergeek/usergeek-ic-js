@@ -1,5 +1,5 @@
 import {LocalStorage} from "@dfinity/auth-client";
-import {TopologyId} from "./canister/coordinator/coordinator.did";
+import {TopologyId} from "./canisters/coordinator.did";
 import {warn} from "./utils";
 
 const store = new LocalStorage("ug-ic");

@@ -1,4 +1,4 @@
-import { TopologyId } from "./canister/coordinator/coordinator.did";
+import { TopologyId } from "./canisters/coordinator.did";
 export declare const UGStorage: {
     coordinator: {
         getTopologyId: () => Promise<TopologyId | undefined>;

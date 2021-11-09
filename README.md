@@ -74,6 +74,26 @@ Usergeek.trackSession()
 Usergeek.setPrincipal(null) //or Usergeek.setPrincipal(Principal.anonymous())
 ```
 
+## Constraints
+
+* Currently Usergeek provides metrics only for **<ins>registered users (non-anonymous Principals)</ins>**.
+* Please note that babel plugin `@babel/plugin-transform-exponentiation-operator"` transforms the exponentiation assignment operator to Math.pow() function which does not support BigInt.<br/>One of the solutions could be to reduce number of supported browsers in `package.json`:
+<br/>
+```json
+...
+"browserslist": {
+  "production": [
+    "last 2 chrome version",
+    "last 2 firefox version",
+    "last 2 safari version",
+    "last 2 edge version"
+  ],
+  ...
+}
+...
+```
+
+
 ## Community
 
 If you have any questions or suggestions please join our [Discord server](https://discord.gg/CvTpv2TeKs).

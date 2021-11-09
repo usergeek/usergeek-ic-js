@@ -1,10 +1,10 @@
 import {Principal} from '@dfinity/principal';
 import {CoordinatorResponse, getResult as getCoordinatorResult, isProceedToAnalyticsReceiver, isProceedToClientRegistry} from "./CoordinatorService";
 import {ClientRegistryResponse, getResult as getClientRegistryResult} from "./ClientRegistryService";
-import {ProjectApiKey} from "./canister/coordinator/coordinator.did";
-import {createErrFatal, createErrRestart, delayPromise, hasOwnProperty, isErr, isOk, isProceed, log, warn} from "./utils";
+import {createErrFatal, createErrRestart, delayPromise, isErr, isOk, isProceed, log, warn} from "./utils";
 import {AnalyticsStoreResponse, getResult as getAnalyticsStoreResult} from "./AnalyticsStoreService";
-import {AccessToken} from "./canister/clientRegistry/clientRegistry.did";
+import {AccessToken} from "./canisters/clientRegistry.did";
+import {SessionContext} from "./index";
 
 export const timeoutBetweenRetriesSec = 2
 const sdkVersion: number = 1
@@ -14,12 +14,10 @@ const CLIENT_REGISTRY_RETRIES: number = 20
 const ANALYTICS_STORE_RETRIES: number = 20
 
 export class SessionFacade {
-    private readonly apiKey: ProjectApiKey;
-    private readonly clientPrincipal: Principal;
+    private readonly sessionContext: SessionContext;
 
-    constructor(apiKey: ProjectApiKey, principal: Principal) {
-        this.apiKey = apiKey
-        this.clientPrincipal = principal
+    constructor(sessionContext: SessionContext) {
+        this.sessionContext = sessionContext
     }
 
     public async trackSession() {
@@ -83,7 +81,7 @@ export class SessionFacade {
     }
 
     private async recursiveCallCoordinator(sdkVersion: number, retriesLeft: number): Promise<CoordinatorResponse> {
-        const coordinatorResponse: CoordinatorResponse = await getCoordinatorResult(sdkVersion, this.apiKey, this.clientPrincipal);
+        const coordinatorResponse: CoordinatorResponse = await getCoordinatorResult(sdkVersion, this.sessionContext);
         log("getResult.coordinator", coordinatorResponse, {retriesLeft});
         if (isOk<CoordinatorResponse>(coordinatorResponse)) {
             return coordinatorResponse
@@ -114,7 +112,7 @@ export class SessionFacade {
     }
 
     private async recursiveCallClientRegistry(sdkVersion: number, clientRegistryPrincipal: Principal, retriesLeft: number): Promise<ClientRegistryResponse> {
-        const clientRegistryResponse: ClientRegistryResponse = await getClientRegistryResult(sdkVersion, this.apiKey, this.clientPrincipal, clientRegistryPrincipal)
+        const clientRegistryResponse: ClientRegistryResponse = await getClientRegistryResult(sdkVersion, this.sessionContext, clientRegistryPrincipal)
         log("getResult.clientRegistry", clientRegistryResponse, {retriesLeft});
         if (isProceed(clientRegistryResponse)) {
             return clientRegistryResponse
@@ -143,7 +141,7 @@ export class SessionFacade {
     }
 
     private async recursiveCallAnalyticsStore(sdkVersion: number, canisterPrincipal: Principal, accessToken: AccessToken, retriesLeft: number): Promise<AnalyticsStoreResponse> {
-        const analyticsStoreResponse: AnalyticsStoreResponse = await getAnalyticsStoreResult(sdkVersion, this.apiKey, this.clientPrincipal, canisterPrincipal, accessToken)
+        const analyticsStoreResponse: AnalyticsStoreResponse = await getAnalyticsStoreResult(sdkVersion, this.sessionContext, canisterPrincipal, accessToken)
         log("getResult.analyticsStore", analyticsStoreResponse, {retriesLeft});
         if (isOk(analyticsStoreResponse)) {
             return analyticsStoreResponse
