@@ -1,6 +1,9 @@
 import { Principal } from "@dfinity/principal";
 export declare type UsergeekConfig = {
     apiKey: string;
+    /**
+     * The host to use for the client to make HttpAgent calls to Usergeek backend
+     */
     host?: string;
 };
 export declare type SessionContext = {

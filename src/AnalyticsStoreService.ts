@@ -12,10 +12,6 @@ type CollectResponse = UGResult<null, UGError>
 
 export type AnalyticsStoreResponse = UGResult<string, UGError>
 
-////////////////////////////////////////////////
-// Public
-////////////////////////////////////////////////
-
 export const getResult = async (sdkVersion: number, sessionContext: SessionContext, canisterPrincipal: Principal, accessToken: AccessToken): Promise<AnalyticsStoreResponse> => {
     const getApiActor: _SERVICE = createCanisterActor(canisterPrincipal.toText(), new AnonymousIdentity(), sessionContext.host);
     const handleGetAnalyticsReceiverApiResponse: GetAnalyticsReceiverApiResponse = await handleGetAnalyticsReceiverApi(getApiActor, sessionContext.clientPrincipal, sdkVersion, accessToken)
@@ -42,10 +38,6 @@ export const getResult = async (sdkVersion: number, sessionContext: SessionConte
     }
     return createErrFatal()
 }
-
-////////////////////////////////////////////////
-// Private
-////////////////////////////////////////////////
 
 const handleGetAnalyticsReceiverApi = async (actor: _SERVICE, clientPrincipal: Principal, sdkVersion: number, accessToken: AccessToken): Promise<GetAnalyticsReceiverApiResponse> => {
     let result: GetAnalyticsReceiverApiResult;

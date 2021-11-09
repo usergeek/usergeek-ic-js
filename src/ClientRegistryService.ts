@@ -15,11 +15,6 @@ export type AnalyticsReceiverView = {
     "accessToken": AccessToken
 }
 export type ClientRegistryResponse = UGResultExtended<string, UGError, AnalyticsReceiverView>
-// export type ClientRegistryResponse = { "proceed": AnalyticsReceiverView } | { "err": "retry" | "stop" | "restart" } | { "ok": string }
-
-////////////////////////////////////////////////
-// Public
-////////////////////////////////////////////////
 
 export const getResult = async (sdkVersion: number, sessionContext: SessionContext, clientRegistryPrincipal: Principal): Promise<ClientRegistryResponse> => {
     const actor: _SERVICE = createCanisterActor(clientRegistryPrincipal.toText(), new AnonymousIdentity(), sessionContext.host);
@@ -57,10 +52,6 @@ export const getResult = async (sdkVersion: number, sessionContext: SessionConte
     }
     return createErrFatal()
 }
-
-////////////////////////////////////////////////
-// Private
-////////////////////////////////////////////////
 
 const handleGetAnalyticsReceiver = async (actor: _SERVICE, clientPrincipal: Principal, sdkVersion: number, apiKey: ProjectApiKey): Promise<GetAnalyticsReceiverResponse> => {
     let result: GetAnalyticsReceiverResult;

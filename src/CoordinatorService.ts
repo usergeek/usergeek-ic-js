@@ -22,10 +22,6 @@ export type CoordinatorResponse = UGResultExtended<string, "changeTopology" | UG
 
 let currentSessionTopologyId
 
-////////////////////////////////////////////////
-// Public
-////////////////////////////////////////////////
-
 export const getResult = async (sdkVersion: number, sessionContext: SessionContext): Promise<CoordinatorResponse> => {
     currentSessionTopologyId = await UGStorage.coordinator.getTopologyId()
     let canisterIds = await UGStorage.coordinator.getCanisterIds();
@@ -38,10 +34,6 @@ export const getResult = async (sdkVersion: number, sessionContext: SessionConte
     }
     return await getClientRegistry(sdkVersion, sessionContext, canisterIds)
 }
-
-////////////////////////////////////////////////
-// Private
-////////////////////////////////////////////////
 
 const hello = async (sdkVersion: number, sessionContext: SessionContext, canisterId: string): Promise<HelloResult> => {
     const actor = createCanisterActor(canisterId, new AnonymousIdentity(), sessionContext.host);

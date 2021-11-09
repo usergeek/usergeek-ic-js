@@ -15,6 +15,11 @@ export declare type ProceedResult<T> = {
 export declare type UGResult<S, F> = OkResult<S> | ErrResult<F>;
 export declare type UGResultExtended<S, F, P> = OkResult<S> | ErrResult<F> | ProceedResult<P>;
 export declare type UGError = "retry" | "restart" | "fatal";
+/**
+ * We want to check if prop is a property key of obj
+ * @param obj - object
+ * @param prop - property
+ */
 export declare function hasOwnProperty<X extends {}, Y extends PropertyKey>(obj: X, prop: Y): obj is X & Record<Y, unknown>;
 export declare const isOk: <T>(obj: T) => obj is T & OkResult<unknown>;
 export declare const isErr: <T>(obj: T) => obj is T & ErrResult<unknown>;
