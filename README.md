@@ -102,7 +102,7 @@ Final initialization in the code would look like this:
 ```javascript
 const USERGEEK_PROJECT_API_KEY_PROD = "ABCD"
 const USERGEEK_PROJECT_API_KEY_DEV = "EFGH"
-const SERVICE_PUBLIC_URL = "https://XXXXX-XXXXX-XXXXX-XXXXX-XXX.ic0.app"
+const SERVICE_PUBLIC_URL = "https://XXXXX-XXXXX-XXXXX-XXXXX-XXX.raw.ic0.app"
 
 if (process.env.NODE_ENV === "development") {
     Usergeek.init({apiKey: USERGEEK_PROJECT_API_KEY_DEV, host: SERVICE_PUBLIC_URL})
