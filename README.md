@@ -105,9 +105,9 @@ const USERGEEK_PROJECT_API_KEY_DEV = "EFGH"
 const SERVICE_PUBLIC_URL = "https://XXXXX-XXXXX-XXXXX-XXXXX-XXX.ic0.app"
 
 if (process.env.NODE_ENV === "development") {
-Usergeek.init({apiKey: USERGEEK_PROJECT_API_KEY_DEV, host: SERVICE_PUBLIC_URL})
+    Usergeek.init({apiKey: USERGEEK_PROJECT_API_KEY_DEV, host: SERVICE_PUBLIC_URL})
 } else {
-Usergeek.init({apiKey: USERGEEK_PROJECT_API_KEY_PROD})
+    Usergeek.init({apiKey: USERGEEK_PROJECT_API_KEY_PROD})
 }
 ```
 
