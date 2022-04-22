@@ -12,6 +12,22 @@ const idlFactory = ({IDL}) => {
         'ok': IDL.Null,
         'err': AnalyticsReceiverApiError,
     });
+    const Event = IDL.Record({
+        'name': IDL.Text,
+        'sequence': IDL.Int,
+        'timeMillis': IDL.Int,
+    });
+    const Session = IDL.Record({'sequence': IDL.Int, 'timeMillis': IDL.Int});
+    const PacketItem = IDL.Variant({'event': Event, 'session': Session});
+    const Packet = IDL.Record({'items': IDL.Vec(PacketItem)});
+    const CollectPacketResultOk = IDL.Record({});
+    const CollectPacketResultError = IDL.Variant({
+        'api': AnalyticsReceiverApiError,
+    });
+    const CollectPacketResult = IDL.Variant({
+        'ok': CollectPacketResultOk,
+        'err': CollectPacketResultError,
+    });
     const IsCollectRequiredResult = IDL.Variant({
         'ok': IDL.Bool,
         'err': AnalyticsReceiverApiError,
@@ -21,6 +37,27 @@ const idlFactory = ({IDL}) => {
         [IsCollectRequiredResult],
         ['query'],
     );
+    const PacketRejectedItem = IDL.Record({'sequence': IDL.Int});
+    const ValidatePacketResultOk = IDL.Record({
+        'rejectedItems': IDL.Opt(IDL.Vec(PacketRejectedItem)),
+    });
+    const ValidatePacketResultError = IDL.Variant({
+        'api': AnalyticsReceiverApiError,
+    });
+    const ValidatePacketResult = IDL.Variant({
+        'ok': ValidatePacketResultOk,
+        'err': ValidatePacketResultError,
+    });
+    const ValidatePacket = IDL.Func(
+        [IDL.Opt(IDL.Principal), SdkVersion, AccessToken, Packet],
+        [ValidatePacketResult],
+        ['query'],
+    );
+    const CollectPacket = IDL.Func(
+        [IDL.Opt(IDL.Principal), SdkVersion, AccessToken, Packet],
+        [CollectPacketResult],
+        [],
+    );
     const Collect = IDL.Func(
         [IDL.Opt(IDL.Principal), SdkVersion, AccessToken],
         [CollectResult],
@@ -28,6 +65,8 @@ const idlFactory = ({IDL}) => {
     );
     const AnalyticsReceiverApi = IDL.Record({
         'isCollectRequired': IsCollectRequired,
+        'validatePacket': ValidatePacket,
+        'collectPacket': CollectPacket,
         'collect': Collect,
     });
     const GetAnalyticsReceiverApiResult = IDL.Variant({
@@ -40,6 +79,11 @@ const idlFactory = ({IDL}) => {
             [CollectResult],
             [],
         ),
+        'collectPacket': IDL.Func(
+            [IDL.Opt(IDL.Principal), SdkVersion, AccessToken, Packet],
+            [CollectPacketResult],
+            [],
+        ),
         'getAnalyticsReceiverApi': IDL.Func(
             [IDL.Opt(IDL.Principal), SdkVersion, AccessToken],
             [GetAnalyticsReceiverApiResult],
@@ -48,6 +92,11 @@ const idlFactory = ({IDL}) => {
         'isCollectRequired': IDL.Func(
             [IDL.Opt(IDL.Principal), SdkVersion, AccessToken],
             [IsCollectRequiredResult],
+            ['query'],
+        ),
+        'validatePacket': IDL.Func(
+            [IDL.Opt(IDL.Principal), SdkVersion, AccessToken, Packet],
+            [ValidatePacketResult],
             ['query'],
         ),
     });

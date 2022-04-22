@@ -1,0 +1,33 @@
+import { Principal } from "@dfinity/principal";
+import { ApiParameters, GetAnalyticsReceiverApiResult } from "../APIService";
+import { UGResult } from "../utils";
+import { Configuration } from "./Configuration";
+import { DebugConfiguration } from "../UsergeekClient";
+export declare class Tracker {
+    private readonly configuration;
+    private readonly clientPrincipal;
+    private readonly debugConfiguration;
+    private readonly reportsStorage;
+    private sequence;
+    private uploader;
+    private scheduleUploadTimer?;
+    private scheduleUpload;
+    private uploading;
+    private destroyed;
+    constructor(apiKey: string, clientPrincipal: Principal, initialConfiguration: Partial<Configuration>, debugConfiguration?: DebugConfiguration);
+    isClientPrincipalEqual: (principal: Principal) => boolean;
+    hasUnsentPackets(): boolean;
+    upload(analyticsReceiverApiResult: GetAnalyticsReceiverApiResult | undefined, sessionAlreadyTracked: boolean, apiParameters: ApiParameters, force: boolean): Promise<UGResult<"ok", Error>>;
+    logSession: () => void;
+    logEvent: (eventName: string) => void;
+    destroy: () => void;
+    private logReport;
+    private proceedToUpload;
+    private uploadReports;
+    private handleUploadReportsResult;
+    private scheduleUploadReports;
+    private uploadReportsDelayed;
+    private buildUploadEventPacket;
+    private validateSequence;
+    private validateReport;
+}

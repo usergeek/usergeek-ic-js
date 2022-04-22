@@ -20,6 +20,43 @@ const idlFactory = ({IDL}) => {
         [IsCollectRequiredResult],
         ['query'],
     );
+    const Event = IDL.Record({
+        'name': IDL.Text,
+        'sequence': IDL.Int,
+        'timeMillis': IDL.Int,
+    });
+    const Session = IDL.Record({'sequence': IDL.Int, 'timeMillis': IDL.Int});
+    const PacketItem = IDL.Variant({'event': Event, 'session': Session});
+    const Packet = IDL.Record({'items': IDL.Vec(PacketItem)});
+    const PacketRejectedItem = IDL.Record({'sequence': IDL.Int});
+    const ValidatePacketResultOk = IDL.Record({
+        'rejectedItems': IDL.Opt(IDL.Vec(PacketRejectedItem)),
+    });
+    const ValidatePacketResultError = IDL.Variant({
+        'api': AnalyticsReceiverApiError,
+    });
+    const ValidatePacketResult = IDL.Variant({
+        'ok': ValidatePacketResultOk,
+        'err': ValidatePacketResultError,
+    });
+    const ValidatePacket = IDL.Func(
+        [IDL.Opt(IDL.Principal), SdkVersion, AccessToken, Packet],
+        [ValidatePacketResult],
+        ['query'],
+    );
+    const CollectPacketResultOk = IDL.Record({});
+    const CollectPacketResultError = IDL.Variant({
+        'api': AnalyticsReceiverApiError,
+    });
+    const CollectPacketResult = IDL.Variant({
+        'ok': CollectPacketResultOk,
+        'err': CollectPacketResultError,
+    });
+    const CollectPacket = IDL.Func(
+        [IDL.Opt(IDL.Principal), SdkVersion, AccessToken, Packet],
+        [CollectPacketResult],
+        [],
+    );
     const CollectResult = IDL.Variant({
         'ok': IDL.Null,
         'err': AnalyticsReceiverApiError,
@@ -31,6 +68,8 @@ const idlFactory = ({IDL}) => {
     );
     const AnalyticsReceiverApi = IDL.Record({
         'isCollectRequired': IsCollectRequired,
+        'validatePacket': ValidatePacket,
+        'collectPacket': CollectPacket,
         'collect': Collect,
     });
     const GetAnalyticsReceiverApiResult = IDL.Variant({

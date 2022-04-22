@@ -31,10 +31,26 @@ export declare const createErrFatal: () => ErrResult<UGError>;
 export declare const createErrRetry: () => ErrResult<UGError>;
 export declare const createErrRestart: () => ErrResult<UGError>;
 export declare const isErrTemporarilyUnavailable: <T>(obj: T) => obj is T & Record<"temporarilyUnavailable", unknown>;
+export declare const isErrApi: <T>(obj: T) => obj is T & Record<"api", unknown>;
 export declare const isErrWrongTopology: <T>(obj: T) => obj is T & Record<"wrongTopology", unknown>;
 export declare const getSharedFunctionData: (value: any) => [Principal, string] | undefined;
 export declare const getSharedFunctionDataPrincipal: (value: any) => Principal;
 export declare const delayPromise: (duration: any) => Promise<unknown>;
 export declare function log(...args: any[]): void;
 export declare const warn: (...args: any[]) => void;
+export declare class UsergeekUtils {
+    static getCurrentTime(): number;
+    static isString(value?: any): boolean;
+    static isStringEmpty(value?: any): boolean;
+    static isNil(value?: any): boolean;
+    static isNumber(value?: any): boolean;
+    static isMap(value?: any): boolean;
+    static isArray(value?: any): boolean;
+    static isObjectLike(value?: any): boolean;
+    static getTag(value?: any): string;
+    static parseJSONSafe(value?: string): any;
+    static getSize(value?: any): number;
+    static jsonStringifyWithBigInt(value: any): string;
+    static jsonParseWithBigInt(value: string): any;
+}
 export {};

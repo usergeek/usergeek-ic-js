@@ -9,7 +9,7 @@ Usergeek JavaScript IC SDK for Internet Computer can be installed as an npm pack
 Install the npm package and embed Usergeek JavaScript IC SDK into your project.
 
 ```sh
-npm install -D github:usergeek/usergeek-ic-js
+npm install github:usergeek/usergeek-ic-js#v1.0.2
 ```
 
 Import Usergeek JavaScript IC SDK into your code.
