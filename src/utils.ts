@@ -71,7 +71,7 @@ export const getSharedFunctionData = (value: any): [Principal, string] | undefin
         if (Array.isArray(value)) {
             const newCoordinator = value as Array<any>
             if (newCoordinator.length === 2) {
-                const principal: Principal = Principal.from(newCoordinator[0])
+                const principal: Principal = newCoordinator[0]//Principal.from(newCoordinator[0])
                 const methodName: string = newCoordinator[1]
                 return [principal, methodName]
             }
@@ -87,7 +87,7 @@ export const getSharedFunctionDataPrincipal = (value: any): Principal => {
         if (Array.isArray(value)) {
             const newCoordinator = value as Array<any>
             if (newCoordinator.length === 2) {
-                const principal: Principal = Principal.from(newCoordinator[0])
+                const principal: Principal = newCoordinator[0]//Principal.from(newCoordinator[0])
                 return principal
             }
         }
