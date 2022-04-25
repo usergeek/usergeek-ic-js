@@ -72,6 +72,9 @@ export const getSharedFunctionData = (value: any): [Principal, string] | undefin
             const newCoordinator = value as Array<any>
             if (newCoordinator.length === 2) {
                 const principal: Principal = newCoordinator[0]//Principal.from(newCoordinator[0])
+                if (typeof principal["toText"] != "function") {
+                    warn("util.getSharedFunctionData: bad principal object", principal);
+                }
                 const methodName: string = newCoordinator[1]
                 return [principal, methodName]
             }
@@ -88,6 +91,9 @@ export const getSharedFunctionDataPrincipal = (value: any): Principal => {
             const newCoordinator = value as Array<any>
             if (newCoordinator.length === 2) {
                 const principal: Principal = newCoordinator[0]//Principal.from(newCoordinator[0])
+                if (typeof principal["toText"] != "function") {
+                    warn("util.getSharedFunctionData: bad principal object", principal);
+                }
                 return principal
             }
         }
