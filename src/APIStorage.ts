@@ -21,9 +21,12 @@ export const APIStorage = {
         },
         getCanisterIds: (): Array<string> => {
             try {
-                const value = JSON.parse(store.get(Key_CanisterIds));
-                if (value && Array.isArray(value)) {
-                    return value
+                const valueFromStorage = store.get(Key_CanisterIds);
+                if (valueFromStorage != undefined) {
+                    const value = JSON.parse(valueFromStorage);
+                    if (value && Array.isArray(value)) {
+                        return value
+                    }
                 }
             } catch (e) {
                 warn("storage.getCanisterIds", e);

@@ -45,6 +45,14 @@ const principal: Principal = identity.getPrincipal()
 Usergeek.setPrincipal(principal)
 ````
 
+#### Log Out
+
+If a user logs out you will need to:
+
+```javascript
+Usergeek.setPrincipal(undefined)
+````
+
 ### Session tracking
 
 This method will send session related event to Usergeek analytics canister. It should be called after non-anonymous principal is set.
@@ -54,6 +62,14 @@ This method will send session related event to Usergeek analytics canister. It s
 ```javascript
 Usergeek.trackSession()
 ```
+
+### Sending Events
+
+You can track an event by calling `trackEvent` method with the event name:
+
+```javascript
+Usergeek.trackEvent("PostCreated")
+````
 
 ### Full example
 
@@ -71,13 +87,19 @@ Usergeek.trackSession()
 
 //...
 
+//somewhere in your app
+Usergeek.trackEvent("PostCreated")
+
+//...
+
 //after user sign-out
-Usergeek.setPrincipal(null) //or Usergeek.setPrincipal(Principal.anonymous())
+Usergeek.setPrincipal(undefined) //or Usergeek.setPrincipal(Principal.anonymous())
 ```
 
 ## Constraints
 
-* Currently Usergeek provides metrics only for **<ins>registered users (non-anonymous Principals)</ins>**.
+* Currently, Usergeek provides metrics only for **<ins>registered users (non-anonymous Principals)</ins>**.
+* Sessions and custom events are temporarily tracked once per user per day (to reduce the number of update calls and cycles burned). 
 * Please note that babel plugin `@babel/plugin-transform-exponentiation-operator"` transforms the exponentiation assignment operator to Math.pow() function which does not support BigInt.<br/>One of the solutions could be to reduce number of supported browsers in `package.json`:
 <br/>
 

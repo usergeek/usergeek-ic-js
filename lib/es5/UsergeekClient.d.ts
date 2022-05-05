@@ -35,7 +35,7 @@ export declare class UsergeekClient {
     private tracker;
     private apiService;
     init: (config: UsergeekConfig) => void;
-    setPrincipal: (principal: Principal | undefined) => void;
+    setPrincipal: (principal: Principal | null | undefined) => void;
     trackSession: () => void;
     trackEvent: (eventName: string) => void;
     flush: () => void;

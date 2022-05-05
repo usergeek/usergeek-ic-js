@@ -56,7 +56,7 @@ export class UsergeekClient {
         }
     };
 
-    public setPrincipal = (principal: Principal | undefined) => {
+    public setPrincipal = (principal: Principal | null | undefined) => {
         try {
             this.validateConfig()
             this.destroy()
