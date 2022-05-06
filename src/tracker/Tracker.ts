@@ -9,7 +9,7 @@ import {EventContent, Report, ReportContent, ReportContentEvent, ReportContentSe
 import {Event, Packet, PacketItem, Session} from "../canisters/analyticsStore.did";
 import {DebugConfiguration} from "../UsergeekClient";
 
-const EVENT_NAME_MAX_SIZE = 250
+const EVENT_NAME_MAX_SIZE = 1024
 
 export class Tracker {
     private readonly configuration: Configuration

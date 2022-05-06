@@ -49,6 +49,7 @@ export class UsergeekClient {
     private apiService: APIService
 
     public init = (config: UsergeekConfig) => {
+        this.destroy()
         this.config = config;
         try {
             log(`Usergeek: initialized with config: ${JSON.stringify(config)}`);
