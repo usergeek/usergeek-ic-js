@@ -13,9 +13,9 @@ type PageVisibilityApi = {
 
 export const PageVisibilityApi: PageVisibilityApi = ((doc): PageVisibilityApi => {
 
-    const hasDocument = typeof document !== 'undefined';
+    const hasDocument = typeof doc !== 'undefined';
 
-    const isSupported = hasDocument && Boolean(document.addEventListener);
+    const isSupported = hasDocument && Boolean(doc.addEventListener);
 
     if (isSupported) {
         const vendorEvents: Array<VendorEvent> = [{
@@ -33,7 +33,7 @@ export const PageVisibilityApi: PageVisibilityApi = ((doc): PageVisibilityApi =>
                 return undefined;
             }
             for (const event of vendorEvents) {
-                if (event.hidden in document) {
+                if (event.hidden in doc) {
                     return event;
                 }
             }

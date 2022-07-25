@@ -1,6 +1,6 @@
 {
   "name": "usergeek-ic-js",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Usergeek Javascript SDK for Internet Computer",
   "main": "./lib/es5/index.js",
   "author": "Usergeek <support@usergeek.com>",
