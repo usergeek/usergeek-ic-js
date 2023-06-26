@@ -31,7 +31,7 @@ It can be found in your project settings at [https://fbbjb-oyaaa-aaaah-qaojq-cai
 ```javascript
 Usergeek.init({
     apiKey: "<API_KEY>",
-    host: "https://xxx.raw.ic0.app" | undefined //used on environments other than IC main network
+    host: "https://ic0.app" | undefined //used on environments other than IC main network
 })
 ```
 
@@ -116,7 +116,7 @@ Usergeek.setPrincipal(undefined) //or Usergeek.setPrincipal(Principal.anonymous(
 
 ## Usergeek on environments other than IC main network
 
-If you’re testing on an environment other than IC main network (e.g. local DFX replica) you need to add additional parameter `host` to the `Usergeek.init` function passing your service public asset canister URL e.g. “https://xxx.raw.ic0.app”.
+If you’re testing on an environment other than IC main network (e.g. local DFX replica) you need to add additional parameter `host` to the `Usergeek.init` function passing your service public asset canister URL e.g. “https://ic0.app”.
 
 In order not to mix users from development environment with users from production environment we suggest separating development (DEV) and production (PROD) environments by creating additional project in Usergeek portal.
 
@@ -124,7 +124,7 @@ Final initialization in the code would look like this:
 ```javascript
 const USERGEEK_PROJECT_API_KEY_PROD = "ABCD"
 const USERGEEK_PROJECT_API_KEY_DEV = "EFGH"
-const SERVICE_PUBLIC_URL = "https://XXXXX-XXXXX-XXXXX-XXXXX-XXX.raw.ic0.app"
+const SERVICE_PUBLIC_URL = "https://ic0.app"
 
 if (process.env.NODE_ENV === "development") {
     Usergeek.init({apiKey: USERGEEK_PROJECT_API_KEY_DEV, host: SERVICE_PUBLIC_URL})
@@ -133,7 +133,7 @@ if (process.env.NODE_ENV === "development") {
 }
 ```
 
-If you are integrating Usergeek into Web2.0 website (e.g. hosted on AWS) and you don't have any public asset canisters on IC main network - you should pass Usergeek's public url as a `host` (https://fbbjb-oyaaa-aaaah-qaojq-cai.raw.ic0.app/).
+If you are integrating Usergeek into Web2.0 website (e.g. hosted on AWS) - you should pass Dfinity base domain as a `host` (https://ic0.app/).
 
 ## Community
 
