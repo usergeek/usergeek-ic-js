@@ -10,7 +10,8 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowJs": true,
-    "removeComments": false
+    "removeComments": false,
+    "skipLibCheck": true
   },
   "files": ["./src/index.ts"],
   "exclude": [
